@@ -1,5 +1,10 @@
 # MCP Gateway
 
+> [!WARNING]
+> **NOT RECOMMENDED FOR USE YET - UNTESTED**
+>
+> This is a proof-of-concept implementation that has not been tested with real MCP servers. Do not use until it has been properly tested and validated.
+
 A security gateway for Model Context Protocol (MCP) traffic, providing logging, auditing, and security scanning capabilities.
 
 ## Features
