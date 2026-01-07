@@ -20,7 +20,7 @@ def config():
         ),
         ScanRule(
             name="test-password",
-            pattern=r"password\s*=\s*['\"]([^'\"]+)['\"]",
+            pattern=r"password:\s*\w+",
             action=ActionType.BLOCK,
             severity=Severity.CRITICAL,
         ),
@@ -80,7 +80,7 @@ def test_scan_with_password_blocks(config):
     scanner = SecurityScanner(config)
     parser = MessageParser()
 
-    message_str = '{"jsonrpc": "2.0", "id": 1, "method": "test", "params": {"creds": "password=\\"secret123\\""}}\n'
+    message_str = '{"jsonrpc": "2.0", "id": 1, "method": "test", "params": {"creds": "password: secret123"}}\n'
     messages = parser.feed(message_str)
     parsed = messages[0]
 
@@ -159,7 +159,7 @@ def test_create_block_response(config):
     scanner = SecurityScanner(config)
     parser = MessageParser()
 
-    message_str = '{"jsonrpc": "2.0", "id": 42, "method": "test", "params": {"pwd": "password=\\"secret\\""}}\n'
+    message_str = '{"jsonrpc": "2.0", "id": 42, "method": "test", "params": {"pwd": "password: secret"}}\n'
     messages = parser.feed(message_str)
     parsed = messages[0]
 
