@@ -1,0 +1,72 @@
+{
+  "logging": {
+    "enabled": true,
+    "destination": "~/.mcp-gateway/logs",
+    "level": "info",
+    "format": "json"
+  },
+  "auditing": {
+    "enabled": true,
+    "audit_log": "~/.mcp-gateway/audit.jsonl",
+    "include_message_content": true,
+    "include_timestamps": true
+  },
+  "scanning": {
+    "enabled": true,
+    "scan_request": true,
+    "scan_response": true,
+    "rules": [
+      {
+        "name": "openai-api-key",
+        "description": "OpenAI API key",
+        "pattern": "sk-[a-zA-Z0-9]{32,}",
+        "action": "alert",
+        "severity": "critical",
+        "enabled": true
+      },
+      {
+        "name": "aws-access-key",
+        "description": "AWS Access Key ID",
+        "pattern": "AKIA[0-9A-Z]{16}",
+        "action": "block",
+        "severity": "critical",
+        "enabled": true
+      },
+      {
+        "name": "private-key",
+        "description": "Private key (RSA, EC, OpenSSH)",
+        "pattern": "-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----",
+        "action": "block",
+        "severity": "critical",
+        "enabled": true
+      },
+      {
+        "name": "context7-api-key",
+        "description": "Context7 API key",
+        "pattern": "ctx7sk-[a-zA-Z0-9-]{32,}",
+        "action": "alert",
+        "severity": "high",
+        "enabled": true
+      },
+      {
+        "name": "email-address",
+        "description": "Email address",
+        "pattern": "\\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\\b",
+        "action": "log",
+        "severity": "low",
+        "enabled": true
+      }
+    ]
+  },
+  "alerting": {
+    "enabled": false,
+    "webhook_url": null,
+    "email": null
+  },
+  "metrics": {
+    "enabled": true,
+    "collect_latency": true,
+    "collect_message_counts": true,
+    "collect_violation_counts": true
+  }
+}
