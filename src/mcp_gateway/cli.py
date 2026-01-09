@@ -22,8 +22,11 @@ def cmd_stdio(args):
     else:
         config = GatewayConfig.load_or_create_default()
 
+    # Get server name from --name flag or None
+    server_name = getattr(args, 'name', None)
+
     # Run the gateway
-    run_gateway(args.command, config_path)
+    run_gateway(args.command, config_path, server_name)
 
 
 def cmd_config_init(args):
@@ -214,6 +217,11 @@ def main():
         "--config",
         type=str,
         help="Path to configuration file",
+    )
+    stdio_parser.add_argument(
+        "--name",
+        type=str,
+        help="Friendly name for the server (used in logs and audit trail)",
     )
     stdio_parser.add_argument(
         "command",

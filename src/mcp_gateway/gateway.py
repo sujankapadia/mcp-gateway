@@ -151,13 +151,16 @@ class StdioGateway:
 
                     # Handle blocking
                     if scan_result.should_block:
-                        # Send error response back to client
-                        error_response = self.scanner.create_block_response(
-                            message,
-                            scan_result,
-                        )
-                        sys.stdout.write(error_response + "\n")
-                        sys.stdout.flush()
+                        # Only send error response for requests (not notifications)
+                        # JSON-RPC 2.0 forbids responses to notifications (messages without id)
+                        if message.message_id is not None:
+                            error_response = self.scanner.create_block_response(
+                                message,
+                                scan_result,
+                            )
+                            sys.stdout.write(error_response + "\n")
+                            sys.stdout.flush()
+                        # For notifications, just drop silently when blocked
                         continue
 
                     # Forward to server (possibly redacted)
@@ -235,13 +238,16 @@ class StdioGateway:
 
                     # Handle blocking
                     if scan_result.should_block:
-                        # Send error response back to client
-                        error_response = self.scanner.create_block_response(
-                            message,
-                            scan_result,
-                        )
-                        sys.stdout.write(error_response + "\n")
-                        sys.stdout.flush()
+                        # Only send error response for requests (not notifications)
+                        # JSON-RPC 2.0 forbids responses to notifications (messages without id)
+                        if message.message_id is not None:
+                            error_response = self.scanner.create_block_response(
+                                message,
+                                scan_result,
+                            )
+                            sys.stdout.write(error_response + "\n")
+                            sys.stdout.flush()
+                        # For notifications, just drop silently when blocked
                         continue
 
                     # Forward to client (possibly redacted)
@@ -297,13 +303,14 @@ class StdioGateway:
                 self.server_process.kill()
 
 
-def run_gateway(server_command: list[str], config_path: str | None = None):
+def run_gateway(server_command: list[str], config_path: str | None = None, server_name: str | None = None):
     """
     Run the gateway with the specified server command.
 
     Args:
         server_command: Command and arguments for the MCP server
         config_path: Optional path to configuration file
+        server_name: Optional friendly name for the server (for logging)
     """
     # Load configuration
     if config_path:
@@ -317,6 +324,7 @@ def run_gateway(server_command: list[str], config_path: str | None = None):
     gateway = StdioGateway(
         server_command=server_command,
         config=config,
+        server_name=server_name,
     )
 
     try:

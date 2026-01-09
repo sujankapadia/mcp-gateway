@@ -16,6 +16,10 @@ A security gateway for Model Context Protocol (MCP) traffic, providing logging, 
 - **stdio Support**: Works with local MCP servers using stdio transport
 - **Easy Integration**: Simple CLI for wrapping existing MCP configurations
 
+## Limitations
+
+- **JSON-RPC Batch Requests**: Not currently supported. The gateway only handles single JSON-RPC messages per line. Batch requests (arrays of messages) will cause the parser to stall. If you need batch request support, please open an issue.
+
 ## Installation
 
 ```bash
@@ -48,16 +52,18 @@ Original configuration (`.mcp.json`):
 }
 ```
 
-With gateway:
+With gateway (recommended - with --name flag for better filtering):
 ```json
 {
   "context7": {
     "type": "stdio",
     "command": "mcp-gateway",
-    "args": ["stdio", "npx", "-y", "@upstash/context7-mcp", "--api-key", "ctx7sk-xxx"]
+    "args": ["stdio", "--name", "context7", "npx", "-y", "@upstash/context7-mcp", "--api-key", "ctx7sk-xxx"]
   }
 }
 ```
+
+The `--name` flag sets a friendly name for the server in logs and audit trails, making it easier to filter by server when viewing logs (`mcp-gateway audit --server context7`).
 
 ## Configuration
 
@@ -72,7 +78,7 @@ Create `~/.mcp-gateway/config.json`:
   },
   "auditing": {
     "enabled": true,
-    "auditLog": "~/.mcp-gateway/audit.jsonl"
+    "audit_log": "~/.mcp-gateway/audit.jsonl"
   },
   "scanning": {
     "enabled": true,
